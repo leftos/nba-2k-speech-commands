@@ -1,0 +1,24 @@
+﻿<Window x:Class="NBA_2K_Speech_Recognition_Tool.CommandsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="My Commands" Height="400" Width="484" WindowStartupLocation="CenterScreen" Closing="Window_Closing" Icon="pack://siteoforigin:,,,/NBA 2K12.ico">
+    <Grid>
+        <ComboBox x:Name="cmbCommands" Margin="10,10,182,0" VerticalAlignment="Top" SelectionChanged="cmbCommands_SelectionChanged"/>
+        <Button x:Name="btnNew" Content="New" Margin="0,10,90,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="75" Click="btnNew_Click"/>
+        <Button x:Name="btnDelete" Content="Delete" HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Top" Width="75" Click="btnDelete_Click"/>
+        <ListBox x:Name="lstButtons" Height="103" Margin="10,79,90,0" VerticalAlignment="Top"/>
+        <Label Content="Button Combination" HorizontalAlignment="Left" Margin="10,48,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="btnAddButton" Content="Add" Margin="0,79,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="75" Click="btnAddButton_Click"/>
+        <Button x:Name="btnEditButton" Content="Edit" Margin="0,106,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="75" Click="btnEditButton_Click"/>
+        <Button x:Name="btnDeleteButton" Content="Remove" Margin="0,160,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="75" Click="btnDeleteButton_Click"/>
+        <ListBox x:Name="lstVoiceCommands" Height="100" Margin="10,228,90,0" VerticalAlignment="Top"/>
+        <Label Content="Voice Commands" HorizontalAlignment="Left" Margin="10,197,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="btnAddVoiceCmd" Content="Add" Margin="0,228,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="75" Click="btnAddVoiceCmd_Click"/>
+        <Button x:Name="btnEditVoiceCmd" Content="Edit" Margin="0,255,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="75" Click="btnEditVoiceCmd_Click"/>
+        <Button x:Name="btnDeleteVoiceCmd" Content="Remove" Margin="0,282,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="75" Click="btnDeleteVoiceCmd_Click"/>
+        <Button x:Name="btnClose" Content="Close" Margin="0,0,10,10" HorizontalAlignment="Right" Width="75" Height="22" VerticalAlignment="Bottom" Click="btnClose_Click"/>
+        <Button x:Name="btnMoveUpButton" Content="▲" Margin="0,133,51,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="34" Click="btnMoveUpButton_Click"/>
+        <Button x:Name="btnMoveDownButton" Content="▼" Margin="0,133,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="34" Click="btnMoveDownButton_Click"/>
+
+    </Grid>
+</Window>
