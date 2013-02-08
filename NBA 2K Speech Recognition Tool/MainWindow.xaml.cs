@@ -1,4 +1,24 @@
-﻿using System;
+﻿#region Copyright Notice
+
+//    Copyright 2011-2013 Eleftherios Aslanoglou
+// 
+//    Licensed under the Apache License, Version 2.0 (the "License");
+//    you may not use this file except in compliance with the License.
+//    You may obtain a copy of the License at
+// 
+//        http://www.apache.org/licenses/LICENSE-2.0
+// 
+//    Unless required by applicable law or agreed to in writing, software
+//    distributed under the License is distributed on an "AS IS" BASIS,
+//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//    See the License for the specific language governing permissions and
+//    limitations under the License.
+
+#endregion
+
+#region Using Directives
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -10,51 +30,48 @@ using System.Threading;
 using System.Timers;
 using System.Windows;
 using System.Windows.Forms;
+using InputManager;
 using Timer = System.Timers.Timer;
+
+#endregion
 
 namespace NBA_2K_Speech_Recognition_Tool
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    ///     Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
-        [DllImport("user32.dll")]
-        private static extern bool SetForegroundWindow(IntPtr hWnd);
-
-        [DllImport("user32.dll")]
-        private static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
-
-        private List<string> isoCommands;
-        private List<string> postCommands;
-        private List<string> wingCommands;
-        private List<string> cutCommands;
-        private List<string> bestCommands;
-        private List<string> screen5Commands;
-        private List<string> screenCommands; 
-        private SpeechRecognitionEngine sre;
-        private List<string> mainCommands;
-        private List<string> easterEggCommands; 
-
-        private bool enabled = true;
-        private bool easterEggEnabled = true;
-
-        private string title = "";
         public static string input = "";
 
         public static List<string> allVoiceCommands = new List<string>();
 
-        public static string DocsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\NBA 2K Speech Recognition Tool";
-        public static string CommandsPath = DocsPath + @"\Commands";
+        public static string DocsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) +
+                                        @"\NBA 2K Speech Recognition Tool";
 
-        private List<Command> commandsList = new List<Command>(); 
+        public static string CommandsPath = DocsPath + @"\Commands";
+        private List<string> bestCommands;
+        private List<Command> commandsList = new List<Command>();
+        private List<string> cutCommands;
+        private List<string> easterEggCommands;
+        private bool easterEggEnabled = true;
+        private bool enabled = true;
+        private List<string> isoCommands;
+        private List<string> mainCommands;
+        private List<string> postCommands;
+        private List<string> screen5Commands;
+        private List<string> screenCommands;
+        private SpeechRecognitionEngine sre;
+
+        private string title = "";
+        private List<string> wingCommands;
 
         public MainWindow()
         {
             InitializeComponent();
 
             Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
-            Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US"); 
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
 
             if (!Directory.Exists(DocsPath))
                 Directory.CreateDirectory(DocsPath);
@@ -70,7 +87,7 @@ namespace NBA_2K_Speech_Recognition_Tool
 
             //Create the speech recognition engine
             sre = new SpeechRecognitionEngine();
-            
+
             //Set the audio device to the OS default
             sre.SetInputToDefaultAudioDevice();
 
@@ -81,7 +98,7 @@ namespace NBA_2K_Speech_Recognition_Tool
             sre.SpeechDetected += sre_SpeechDetected;
             sre.RecognizeCompleted += sre_RecognizeCompleted;
 
-            Timer timer = new Timer(15000);
+            var timer = new Timer(15000);
             timer.Elapsed += Callback;
             timer.Start();
 
@@ -89,16 +106,22 @@ namespace NBA_2K_Speech_Recognition_Tool
             sre.RecognizeAsync(RecognizeMode.Multiple);
         }
 
+        [DllImport("user32.dll")]
+        private static extern bool SetForegroundWindow(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        private static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
+
         private void parseCommands()
         {
             //Reset the Grammars
             sre.UnloadAllGrammars();
 
-            foreach (string file in Directory.GetFiles(CommandsPath))
+            foreach (var file in Directory.GetFiles(CommandsPath))
             {
-                StreamReader sr = new StreamReader(file);
+                var sr = new StreamReader(file);
                 string s = sr.ReadLine();
-                Command c = new Command();
+                var c = new Command();
                 c.Name = s;
                 sr.ReadLine();
                 s = sr.ReadLine();
@@ -119,14 +142,33 @@ namespace NBA_2K_Speech_Recognition_Tool
             }
             commandsList.ForEach(c => c.VoiceCommands.ForEach(vc => allVoiceCommands.Add(vc)));
 
-            mainCommands = new List<string> { "start listening", "stop listening", "I promise to be good" };
+            mainCommands = new List<string> {"start listening", "stop listening", "I promise to be good"};
             mainCommands.ForEach(s => allVoiceCommands.Add(s));
 
-            easterEggCommands = new List<string> {"fuck", "shit", "bullshit", "this is bullshit", "fuck that", "fuck you", "what the fuck", 
-                "fucker", "motherfucker", "mother fucker", "cunt", "bastard", "you bastard", "you cunt", "bitch", "fucking bitch", "you bitch"};
+            easterEggCommands = new List<string>
+                                {
+                                    "fuck",
+                                    "shit",
+                                    "bullshit",
+                                    "this is bullshit",
+                                    "fuck that",
+                                    "fuck you",
+                                    "what the fuck",
+                                    "fucker",
+                                    "motherfucker",
+                                    "mother fucker",
+                                    "cunt",
+                                    "bastard",
+                                    "you bastard",
+                                    "you cunt",
+                                    "bitch",
+                                    "fucking bitch",
+                                    "you bitch"
+                                };
             easterEggCommands.ForEach(s => allVoiceCommands.Add(s));
 
             #region Old Commands
+
             /*
             isoCommands = new List<string>
                           {
@@ -164,16 +206,17 @@ namespace NBA_2K_Speech_Recognition_Tool
             screen5Commands.ForEach(s => allVoiceCommands.Add(s));
             screenCommands.ForEach(s => allVoiceCommands.Add(s));
             */
+
             #endregion
 
-
-            Choices thisChoices = new Choices("Computer");
+            var thisChoices = new Choices("Computer");
+            allVoiceCommands.RemoveAll(String.IsNullOrWhiteSpace);
             allVoiceCommands.ForEach(s => thisChoices.Add(s));
 
             //Create a grammar based on these choices
-            GrammarBuilder gb = new GrammarBuilder(thisChoices);
+            var gb = new GrammarBuilder(thisChoices);
             gb.Culture = new CultureInfo("en-US");
-            Grammar thisGrammar = new Grammar(gb);
+            var thisGrammar = new Grammar(gb);
             // Set the Grammar name
             thisGrammar.Name = "NBA 2K";
 
@@ -181,7 +224,7 @@ namespace NBA_2K_Speech_Recognition_Tool
             sre.LoadGrammar(thisGrammar);
         }
 
-        void sre_RecognizeCompleted(object sender, RecognizeCompletedEventArgs e)
+        private void sre_RecognizeCompleted(object sender, RecognizeCompletedEventArgs e)
         {
             if (e.Cancelled)
             {
@@ -195,7 +238,7 @@ namespace NBA_2K_Speech_Recognition_Tool
             sre.RecognizeAsyncStop();
         }
 
-        void sre_SpeechDetected(object sender, SpeechDetectedEventArgs e)
+        private void sre_SpeechDetected(object sender, SpeechDetectedEventArgs e)
         {
             AddToList("Speech Detected");
         }
@@ -219,7 +262,7 @@ namespace NBA_2K_Speech_Recognition_Tool
                     {
                         Say("I'm ready!");
                     }
-                    #region Old Commands
+                        #region Old Commands
                         /*
                     else if (isoCommands.Contains(said))
                     {
@@ -259,7 +302,8 @@ namespace NBA_2K_Speech_Recognition_Tool
                             PressKey(Keys.Tab);
                     }
                          */
-                    #endregion
+                        #endregion
+
                     else if (mainCommands.Contains(said))
                     {
                         if (said == "stop listening")
@@ -280,13 +324,14 @@ namespace NBA_2K_Speech_Recognition_Tool
                     }
                     else if (easterEggCommands.Contains(said))
                     {
-                        if (easterEggEnabled) PressKey(Keys.Back);
+                        if (easterEggEnabled)
+                            PressKey(Keys.Back);
                     }
                     else
                     {
                         Command cmd = commandsList.Find(c => c.VoiceCommands.Contains(said));
                         AddToList("Running '" + cmd.Name + "'");
-                        foreach (string buttonAction in cmd.Buttons)
+                        foreach (var buttonAction in cmd.Buttons)
                         {
                             string[] parts = buttonAction.Split(new[] {' '});
                             int endIndex = 1;
@@ -305,8 +350,9 @@ namespace NBA_2K_Speech_Recognition_Tool
                             bool press = parts[0] == "Press";
                             int duration = Convert.ToInt32(parts[endIndex + 2]);
                             int repeats = 1;
-                            if (!press) repeats = Convert.ToInt32(parts[endIndex + 4]);
-                            Keys keyToPress = Keys.None;
+                            if (!press)
+                                repeats = Convert.ToInt32(parts[endIndex + 4]);
+                            var keyToPress = Keys.None;
                             // "Pass (A/Cross)", "Shoot (X/Square)", "Fake Pass (B/Circle)", "Post Up (Y/Triangle)", "Positional Plays (LB/L1)", "Icon Pass (RB/R1)",
                             //           "Clutch (LT/L2)", "Sprint (RT/R2)", "D-Pad Up", "D-Pad Down", "D-Pad Left", "D-Pad Right"
                             switch (btn)
@@ -353,11 +399,12 @@ namespace NBA_2K_Speech_Recognition_Tool
                             }
                             if (press)
                             {
-                                if (keyToPress != Keys.None) PressKey(keyToPress, duration);
+                                if (keyToPress != Keys.None)
+                                    PressKey(keyToPress, duration);
                             }
                             else
                             {
-                                if (keyToPress!=Keys.None)
+                                if (keyToPress != Keys.None)
                                 {
                                     for (int i = 0; i < repeats; i++)
                                     {
@@ -402,9 +449,9 @@ namespace NBA_2K_Speech_Recognition_Tool
 
         private static void PressKey(Keys k, int timeInMS = 50)
         {
-            InputManager.Keyboard.KeyDown(k);
+            Keyboard.KeyDown(k);
             Thread.Sleep(timeInMS);
-            InputManager.Keyboard.KeyUp(k);
+            Keyboard.KeyUp(k);
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
@@ -426,7 +473,7 @@ namespace NBA_2K_Speech_Recognition_Tool
 
         private void btnAddCommand_Click(object sender, RoutedEventArgs e)
         {
-            CommandsWindow cw = new CommandsWindow();
+            var cw = new CommandsWindow();
             cw.ShowDialog();
 
             commandsList.ForEach(c => c.VoiceCommands.ForEach(cmd => allVoiceCommands.Remove(cmd)));

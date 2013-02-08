@@ -1,20 +1,33 @@
-﻿using System;
+﻿#region Copyright Notice
+
+//    Copyright 2011-2013 Eleftherios Aslanoglou
+// 
+//    Licensed under the Apache License, Version 2.0 (the "License");
+//    you may not use this file except in compliance with the License.
+//    You may obtain a copy of the License at
+// 
+//        http://www.apache.org/licenses/LICENSE-2.0
+// 
+//    Unless required by applicable law or agreed to in writing, software
+//    distributed under the License is distributed on an "AS IS" BASIS,
+//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//    See the License for the specific language governing permissions and
+//    limitations under the License.
+
+#endregion
+
+#region Using Directives
+
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+
+#endregion
 
 namespace NBA_2K_Speech_Recognition_Tool
 {
     /// <summary>
-    /// Interaction logic for AddButtonWindow.xaml
+    ///     Interaction logic for AddButtonWindow.xaml
     /// </summary>
     public partial class AddButtonWindow : Window
     {
@@ -27,16 +40,27 @@ namespace NBA_2K_Speech_Recognition_Tool
             txtDuration.Text = "50";
             txtRepeats.Text = "30";
 
-            List<string> buttons = new List<string>
-                                   {
-                                       "Pass (A/Cross)", "Shoot (X/Square)", "Fake Pass (B/Circle)", "Post Up (Y/Triangle)", "Positional Plays (LB/L1)", "Icon Pass (RB/R1)",
-                                       "Clutch (LT/L2)", "Sprint (RT/R2)", "D-Pad Up", "D-Pad Down", "D-Pad Left", "D-Pad Right", "Call Timeout (Back/Select)"
-                                   };
+            var buttons = new List<string>
+                          {
+                              "Pass (A/Cross)",
+                              "Shoot (X/Square)",
+                              "Fake Pass (B/Circle)",
+                              "Post Up (Y/Triangle)",
+                              "Positional Plays (LB/L1)",
+                              "Icon Pass (RB/R1)",
+                              "Clutch (LT/L2)",
+                              "Sprint (RT/R2)",
+                              "D-Pad Up",
+                              "D-Pad Down",
+                              "D-Pad Left",
+                              "D-Pad Right",
+                              "Call Timeout (Back/Select)"
+                          };
 
             cmbButtons.ItemsSource = buttons;
         }
 
-        public AddButtonWindow(string button, string type, int duration, int repeats): this()
+        public AddButtonWindow(string button, string type, int duration, int repeats) : this()
         {
             cmbButtons.SelectedItem = button;
             if (type == "Press")
@@ -82,7 +106,6 @@ namespace NBA_2K_Speech_Recognition_Tool
             }
             catch
             {
-                
             }
         }
 

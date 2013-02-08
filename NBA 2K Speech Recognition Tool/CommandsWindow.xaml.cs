@@ -1,32 +1,46 @@
-﻿using System;
-using System.Collections.Generic;
+﻿#region Copyright Notice
+
+//    Copyright 2011-2013 Eleftherios Aslanoglou
+// 
+//    Licensed under the Apache License, Version 2.0 (the "License");
+//    you may not use this file except in compliance with the License.
+//    You may obtain a copy of the License at
+// 
+//        http://www.apache.org/licenses/LICENSE-2.0
+// 
+//    Unless required by applicable law or agreed to in writing, software
+//    distributed under the License is distributed on an "AS IS" BASIS,
+//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//    See the License for the specific language governing permissions and
+//    limitations under the License.
+
+#endregion
+
+#region Using Directives
+
+using System;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using Path = System.IO.Path;
+
+#endregion
 
 namespace NBA_2K_Speech_Recognition_Tool
 {
     /// <summary>
-    /// Interaction logic for CommandsWindow.xaml
+    ///     Interaction logic for CommandsWindow.xaml
     /// </summary>
     public partial class CommandsWindow : Window
     {
-        bool deleting;
-        
+        private bool deleting;
+
         public CommandsWindow()
         {
             InitializeComponent();
 
-            foreach (string file in Directory.GetFiles(MainWindow.CommandsPath))
+            foreach (var file in Directory.GetFiles(MainWindow.CommandsPath))
             {
                 deleting = true;
                 cmbCommands.Items.Add(Path.GetFileNameWithoutExtension(file));
@@ -37,7 +51,7 @@ namespace NBA_2K_Speech_Recognition_Tool
 
         private void btnNew_Click(object sender, RoutedEventArgs e)
         {
-            InputBoxWindow ibw = new InputBoxWindow("Enter the name of the new command");
+            var ibw = new InputBoxWindow("Enter the name of the new command");
             if (ibw.ShowDialog() == true)
             {
                 if (MainWindow.input.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
@@ -70,10 +84,10 @@ namespace NBA_2K_Speech_Recognition_Tool
 
         private void btnAddButton_Click(object sender, RoutedEventArgs e)
         {
-            AddButtonWindow abw = new AddButtonWindow();
+            var abw = new AddButtonWindow();
             if (abw.ShowDialog() == true)
             {
-                var toShow = convertAddButtonResult();
+                string toShow = convertAddButtonResult();
                 lstButtons.Items.Add(toShow);
             }
         }
@@ -116,15 +130,15 @@ namespace NBA_2K_Speech_Recognition_Tool
             cmd = cmd.Replace("'", "");
             if (parts[0] == "Press")
             {
-                abw = new AddButtonWindow(cmd, parts[0], Convert.ToInt32(parts[endIndex+2]), 30);
+                abw = new AddButtonWindow(cmd, parts[0], Convert.ToInt32(parts[endIndex + 2]), 30);
             }
             else
             {
-                abw = new AddButtonWindow(cmd, parts[0], Convert.ToInt32(parts[endIndex+4]), Convert.ToInt32(parts[endIndex+2]));
+                abw = new AddButtonWindow(cmd, parts[0], Convert.ToInt32(parts[endIndex + 4]), Convert.ToInt32(parts[endIndex + 2]));
             }
             if (abw.ShowDialog() == true)
             {
-                var toShow = convertAddButtonResult();
+                string toShow = convertAddButtonResult();
                 int index = lstButtons.SelectedIndex;
                 lstButtons.Items.RemoveAt(index);
                 lstButtons.Items.Insert(index, toShow);
@@ -141,7 +155,7 @@ namespace NBA_2K_Speech_Recognition_Tool
 
         private void btnAddVoiceCmd_Click(object sender, RoutedEventArgs e)
         {
-            InputBoxWindow ibw = new InputBoxWindow("Enter the spoken phrase you want to tie to this action");
+            var ibw = new InputBoxWindow("Enter the spoken phrase you want to tie to this action");
             if (ibw.ShowDialog() == true)
             {
                 string cmd = MainWindow.input;
@@ -160,7 +174,7 @@ namespace NBA_2K_Speech_Recognition_Tool
             if (lstVoiceCommands.SelectedIndex == -1)
                 return;
 
-            InputBoxWindow ibw = new InputBoxWindow("Enter the spoken phrase you want to tie to this action", lstVoiceCommands.SelectedItem.ToString());
+            var ibw = new InputBoxWindow("Enter the spoken phrase you want to tie to this action", lstVoiceCommands.SelectedItem.ToString());
             if (ibw.ShowDialog() == true)
             {
                 string cmd = MainWindow.input;
@@ -186,7 +200,7 @@ namespace NBA_2K_Speech_Recognition_Tool
 
         private void btnClose_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         private void btnMoveUpButton_Click(object sender, RoutedEventArgs e)
@@ -230,7 +244,7 @@ namespace NBA_2K_Speech_Recognition_Tool
             lstVoiceCommands.Items.Clear();
             if (File.Exists(file))
             {
-                StreamReader sr = new StreamReader(file);
+                var sr = new StreamReader(file);
                 sr.ReadLine();
                 sr.ReadLine();
                 string s = sr.ReadLine();
@@ -252,7 +266,7 @@ namespace NBA_2K_Speech_Recognition_Tool
 
         private void SaveCurrentCommand(string cmdName)
         {
-            StreamWriter sw = new StreamWriter(MainWindow.CommandsPath + "\\" + cmdName + ".src", false);
+            var sw = new StreamWriter(MainWindow.CommandsPath + "\\" + cmdName + ".src", false);
             sw.WriteLine(cmdName);
             sw.WriteLine("BEGIN_BUTTONS");
             foreach (string button in lstButtons.Items)
@@ -263,15 +277,17 @@ namespace NBA_2K_Speech_Recognition_Tool
             sw.WriteLine("BEGIN_VOICE");
             foreach (string voicecmd in lstVoiceCommands.Items)
             {
-                sw.WriteLine(voicecmd);
+                if (!String.IsNullOrWhiteSpace(voicecmd))
+                    sw.WriteLine(voicecmd);
             }
             sw.WriteLine("END_VOICE");
             sw.Close();
         }
 
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void Window_Closing(object sender, CancelEventArgs e)
         {
-            if (cmbCommands.SelectedIndex != -1) SaveCurrentCommand(cmbCommands.SelectedItem.ToString());
+            if (cmbCommands.SelectedIndex != -1)
+                SaveCurrentCommand(cmbCommands.SelectedItem.ToString());
         }
     }
 }
